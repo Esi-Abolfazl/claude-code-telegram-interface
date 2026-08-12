@@ -1,0 +1,26 @@
+{
+  "name": "claude-code-telegram-interface",
+  "version": "0.1.0",
+  "description": "Claude Code plugin: mirrors Claude's questions/approvals to your own Telegram bot and returns one-tap answers.",
+  "type": "module",
+  "bin": {
+    "claude-code-telegram-interface": "./src/main.ts"
+  },
+  "scripts": {
+    "start": "node src/main.ts",
+    "test": "node src/main.ts --selftest",
+    "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=23.6"
+  },
+  "packageManager": "pnpm@11.4.0",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "typescript": "^5.8.0"
+  }
+}

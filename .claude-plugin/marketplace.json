@@ -1,0 +1,11 @@
+{
+  "name": "claude-code-telegram-interface",
+  "owner": { "name": "Esi-Abolfazl" },
+  "plugins": [
+    {
+      "name": "claude-code-telegram-interface",
+      "source": "./",
+      "description": "Answer Claude's questions and plan approvals from your phone, via your own Telegram bot."
+    }
+  ]
+}

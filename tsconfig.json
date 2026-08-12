@@ -1,0 +1,25 @@
+{
+  // Node runs these .ts files directly by stripping types (>= 23.6), so the
+  // syntax must be erasable: `erasableSyntaxOnly` makes the compiler enforce
+  // that instead of leaving it to review.
+  //
+  // ponytail: strict is off — this began as a 2k-line JS codebase and full
+  // strictNullChecks would be a rewrite, not a migration. Ceiling: nullable
+  // bugs still slip through. Retire by turning on `strict` and fixing files
+  // one at a time once the plugin release has settled.
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "lib": ["esnext"],
+    "types": ["node"],
+    "allowImportingTsExtensions": true,
+    "erasableSyntaxOnly": true,
+    "noEmit": true,
+    "strict": false,
+    "noImplicitAny": false,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src"]
+}

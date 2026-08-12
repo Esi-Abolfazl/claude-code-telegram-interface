@@ -1,0 +1,63 @@
+name: release
+
+# Tag a version to publish binaries:  git tag v0.1.0 && git push --tags
+# The version in the tag must match .claude-plugin/plugin.json — bin/run.sh
+# builds its download URL from that field.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Each target builds on its own native runner so the selftest gate
+          # below actually executes the artifact we ship, instead of trusting
+          # an unexecutable cross-compiled one.
+          - { runner: macos-14, target: bun-darwin-arm64, asset: claude-code-telegram-interface-darwin-arm64 }
+          - { runner: macos-13, target: bun-darwin-x64, asset: claude-code-telegram-interface-darwin-x64 }
+          - { runner: ubuntu-latest, target: bun-linux-x64, asset: claude-code-telegram-interface-linux-x64 }
+          - { runner: ubuntu-24.04-arm, target: bun-linux-arm64, asset: claude-code-telegram-interface-linux-arm64 }
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      # The repo's lockfile is pnpm's; bun resolves from package.json instead.
+      - run: bun install
+
+      - name: Compile
+        run: |
+          bun build --compile --target=${{ matrix.target }} \
+            --define __COMPILED__=true \
+            --define __BUILD_V__=$(date +%s000) \
+            --outfile ${{ matrix.asset }} \
+            src/main.ts
+
+      # The Bun-compat tripwire: if the SDK, zod, or the Atomics.wait state
+      # lock misbehave under a compiled binary, this fails before publish.
+      - name: Selftest the binary
+        run: ./${{ matrix.asset }} --selftest
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.asset }}
+          path: ${{ matrix.asset }}
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with: { path: dist, merge-multiple: true }
+      - name: Checksums
+        run: cd dist && sha256sum claude-code-telegram-interface-* > checksums.txt && cat checksums.txt
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/claude-code-telegram-interface-*
+            dist/checksums.txt

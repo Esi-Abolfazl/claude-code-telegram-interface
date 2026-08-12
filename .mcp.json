@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "claude-code-telegram-interface": {
+      "command": "${CLAUDE_PLUGIN_ROOT}/bin/run.sh"
+    }
+  }
+}

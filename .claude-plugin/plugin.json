@@ -1,0 +1,9 @@
+{
+  "name": "claude-code-telegram-interface",
+  "version": "0.1.0",
+  "description": "Answer Claude's questions and plan approvals from your phone, via your own Telegram bot.",
+  "author": { "name": "Esi-Abolfazl" },
+  "homepage": "https://github.com/Esi-Abolfazl/claude-code-telegram-interface",
+  "repository": "https://github.com/Esi-Abolfazl/claude-code-telegram-interface",
+  "license": "MIT"
+}
